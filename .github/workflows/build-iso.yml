@@ -3,6 +3,9 @@ name: Build Nostalgia OS Bootable ISO
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,9 +23,12 @@ jobs:
           chmod +x build.sh
           sudo ./build.sh
 
-      - name: Upload Bootable ISO as Artifact
-        uses: actions/upload-artifact@v4
+      - name: Create GitHub Release with Fast Download
+        uses: softprops/action-gh-release@v2
         with:
-          name: NostalgiaOS-1.0-x86_64
-          path: NostalgiaOS-1.0-x86_64.iso
-          retention-days: 7
+          tag_name: v1.0
+          name: "NOSTALGIA OS 1.0 (LTS) - Rakib Hasan Rimon"
+          body: "Official bootable hybrid ISO image of NOSTALGIA OS 1.0 (x86_64)."
+          files: NostalgiaOS-1.0-x86_64.iso
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
