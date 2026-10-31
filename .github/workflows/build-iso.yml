@@ -1,10 +1,7 @@
-name: Build Nostalgia OS Bootable ISO
+name: Build Nostalgia OS 2.0 Desktop ISO
 
 on:
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   build:
@@ -13,22 +10,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Build Prerequisites
+      - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y debootstrap squashfs-tools xorriso grub-pc-bin grub-efi-amd64-bin mtools dosfstools python3-pil
 
-      - name: Run ISO Pipeline Script
+      - name: Run Build Script
         run: |
           chmod +x build.sh
           sudo ./build.sh
 
-      - name: Create GitHub Release with Fast Download
-        uses: softprops/action-gh-release@v2
+      - name: Upload Bootable ISO
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: v1.0
-          name: "NOSTALGIA OS 1.0 (LTS) - Rakib Hasan Rimon"
-          body: "Official bootable hybrid ISO image of NOSTALGIA OS 1.0 (x86_64)."
-          files: NostalgiaOS-1.0-x86_64.iso
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: NostalgiaOS-2.0-x86_64
+          path: NostalgiaOS-2.0-x86_64.iso
+          retention-days: 7
